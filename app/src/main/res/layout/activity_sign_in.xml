@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    tools:context=".activities.SignIn">
+
+
+    <androidx.cardview.widget.CardView
+        android:elevation="20dp"
+        app:cardCornerRadius="30dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:scaleType="center"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@drawable/bg_food" />
+
+    </androidx.cardview.widget.CardView>
+
+
+    <TextView
+        android:layout_margin="20dp"
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/indie_flower"
+        android:text="Welcome to Recipe App"
+        android:textColor="#000"
+        android:textSize="30dp"
+        />
+
+
+        <com.google.android.gms.common.SignInButton
+            android:layout_margin="20dp"
+            android:padding="10dp"
+            android:id="@+id/sign_in_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+</LinearLayout>

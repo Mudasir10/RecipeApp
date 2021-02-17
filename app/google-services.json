@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "775470824655",
+    "project_id": "recipe-22e90",
+    "storage_bucket": "recipe-22e90.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:775470824655:android:6555fcc361bb29bc994bba",
+        "android_client_info": {
+          "package_name": "com.mudasir.recipeapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "775470824655-55v7jj1253fouk37ftjgopb8aqij3kng.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mudasir.recipeapp",
+            "certificate_hash": "c7db8459b48da93c917b34badb37dc768a8fe275"
+          }
+        },
+        {
+          "client_id": "775470824655-modibsoal2gneeveiuejf1ag0d4pdupe.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcuQ7ywLsMSDte6e55J65mPhJTjSP1uuU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "775470824655-modibsoal2gneeveiuejf1ag0d4pdupe.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
