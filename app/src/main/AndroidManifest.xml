@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.RecipeApp">
-        <activity android:name=".activities.RecipeDetails"></activity>
+        <activity android:name=".activities.CommentsActivity"/>
+        <activity android:name=".activities.RecipeDetails" />
         <activity
             android:name=".activities.AcountDetails"
             android:parentActivityName=".activities.MainActivity" />

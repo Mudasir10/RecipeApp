@@ -24,22 +24,19 @@ import com.mudasir.recipeapp.models.Recipe;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PakistaniRecipes extends Fragment {
+public class Appetizer_And_Snack_Recipes extends Fragment {
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-
     private List<Recipe> mRecipeList;
-
     private DatabaseReference mDatabaseRef;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View root= inflater.inflate(R.layout.fragment_pakistani_recipes, container, false);
+        View root= inflater.inflate(R.layout.fragment_appetizer__and__snack__recipes, container, false);
 
         init(root);
 
@@ -48,11 +45,10 @@ public class PakistaniRecipes extends Fragment {
 
         return root;
     }
-
     private void init(View root) {
         mRecipeList=new ArrayList<>();
         mDatabaseRef= FirebaseDatabase.getInstance().getReference("Recipes");
-        mRecyclerView=root.findViewById(R.id.rv_pakistani_recipes);
+        mRecyclerView=root.findViewById(R.id.rv_appetizer_and_snack_recipes);
         mLayoutManager=new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setHasFixedSize(true);
@@ -60,7 +56,7 @@ public class PakistaniRecipes extends Fragment {
 
     private void RetriveFromFirebaseDatabase() {
 
-       Query query=  mDatabaseRef.orderByChild("category").equalTo("Pakistani Recipes");
+        Query query=  mDatabaseRef.orderByChild("category").equalTo("Appetizer And Snack Recipes");
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

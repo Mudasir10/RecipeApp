@@ -12,17 +12,19 @@ public class Recipe {
     private String ingredents;
     private String making;
     private String imageUrl;
+    private String category;
+
 
     public Recipe() {
     }
 
-    public Recipe(String key, String title, String ingredents, String making, String imageUrl) {
+    public Recipe(String key, String title, String ingredents, String making, String imageUrl,String category) {
         this.key = key;
         this.title = title;
         this.ingredents = ingredents;
         this.making = making;
         this.imageUrl = imageUrl;
-
+        this.category=category;
     }
 
     public String getIngredents() {
@@ -67,7 +69,13 @@ public class Recipe {
         this.imageUrl = imageUrl;
     }
 
+    public String getCategory() {
+        return category;
+    }
 
+    public void setCategory(String category) {
+        this.category = category;
+    }
 
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
@@ -76,6 +84,7 @@ public class Recipe {
         result.put("ingredents", this.ingredents);
         result.put("making", this.making);
         result.put("imageUrl", this.imageUrl);
+        result.put("category",this.category);
         return result;
     }
 }

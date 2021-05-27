@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
@@ -19,6 +20,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.mudasir.recipeapp.R;
 import com.mudasir.recipeapp.activities.RecipeDetails;
 import com.mudasir.recipeapp.models.Recipe;
@@ -26,8 +29,10 @@ import com.mudasir.recipeapp.models.Recipe;
 import java.util.List;
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImagesViewHolder> {
+
     private Context mContext;
     private List<Recipe> mRecipeList;
+    private DatabaseReference mDatabaseRefLikes=FirebaseDatabase.getInstance().getReference("Recipes").child("likes");
 
     public ImageAdapter(Context mContext, List<Recipe> mRecipeList) {
         this.mContext = mContext;
@@ -46,9 +51,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImagesViewHo
 
         Recipe recipe=mRecipeList.get(position);
         holder.tvTitle.setText(recipe.getTitle());
-        //holder.mRatingBar.setRating(recipe.getRating());
-        holder.mRatingBar.setEnabled(false);
-
+        holder.category.setText(recipe.getCategory());
 
         Glide.with(mContext).load(recipe.getImageUrl()).listener(new RequestListener<String, GlideDrawable>() {
             @Override
@@ -66,6 +69,8 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImagesViewHo
 
 
         holder.btnViewRecipe.setOnClickListener(v -> {
+
+
             Intent intent=new Intent(mContext,RecipeDetails.class);
             intent.putExtra("name",mRecipeList.get(position).getTitle());
             intent.putExtra("url",mRecipeList.get(position).getImageUrl());
@@ -86,18 +91,22 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImagesViewHo
 
         ImageView imageView;
         TextView tvTitle;
-        RatingBar mRatingBar;
         Button btnViewRecipe;
         ProgressBar mProgress;
+        TextView category;
+        ImageButton btnfav;
+
 
 
         public ImagesViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView=itemView.findViewById(R.id.item_image);
             tvTitle=itemView.findViewById(R.id.tv_title);
-            mRatingBar=itemView.findViewById(R.id.ratingBar);
             btnViewRecipe=itemView.findViewById(R.id.btnView);
             mProgress=itemView.findViewById(R.id.single_item_progress);
+            category=itemView.findViewById(R.id.textViewCategory);
+            btnfav=itemView.findViewById(R.id.btnfavorite);
+
 
 
         }

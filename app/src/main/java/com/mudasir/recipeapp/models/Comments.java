@@ -6,16 +6,25 @@ import java.util.Map;
 public class Comments {
 
     private String userId;
-    private String UserName;
-    private String message;
+    private String userName;
+    private String comment;
 
     public Comments() {
     }
 
     public Comments(String userId, String userName, String message) {
         this.userId = userId;
-        UserName = userName;
-        this.message = message;
+        this.userName = userName;
+        this.comment = message;
+    }
+
+
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("userId", this.userId);
+        result.put("userName", this.userName);
+        result.put("comment", this.comment);
+        return result;
     }
 
     public String getUserId() {
@@ -27,26 +36,18 @@ public class Comments {
     }
 
     public String getUserName() {
-        return UserName;
+        return userName;
     }
 
     public void setUserName(String userName) {
-        UserName = userName;
+        this.userName = userName;
     }
 
-    public String getMessage() {
-        return message;
+    public String getComment() {
+        return comment;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public Map<String, Object> toMap() {
-        HashMap<String, Object> result = new HashMap<>();
-        result.put("userId", this.userId);
-        result.put("userName", this.userId);
-        result.put("comment", this.message);
-        return result;
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

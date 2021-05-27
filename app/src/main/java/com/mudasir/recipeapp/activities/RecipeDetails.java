@@ -1,18 +1,17 @@
 package com.mudasir.recipeapp.activities;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
@@ -23,6 +22,13 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.mudasir.recipeapp.R;
 
 public class RecipeDetails extends AppCompatActivity {
@@ -34,17 +40,43 @@ public class RecipeDetails extends AppCompatActivity {
     ImageView imageView;
     ProgressBar progressBar;
 
+    FirebaseUser mCurrentUser;
+    FirebaseAuth mAuth;
+    String UserId;
+    boolean showingFirst = true;
+    Button btngivelike;
+    TextView tvlikesCount,tvcommentsCount, tvRatingsCount, tvViewCount;
+
+    private DatabaseReference mDatabaseRefLikes;
+    private DatabaseReference mDatabaseRefRatings;
+    private DatabaseReference mDatabaseRefViews;
+    private DatabaseReference mDatabaseRefComments;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_details);
 
+        mAuth = FirebaseAuth.getInstance();
+        mCurrentUser = mAuth.getCurrentUser();
+        UserId = mCurrentUser.getUid();
+
+
+
         ingredents = findViewById(R.id.ingredents);
         making = findViewById(R.id.howto);
         imageView=findViewById(R.id.recipe_image);
         progressBar=findViewById(R.id.progress);
+        tvlikesCount=findViewById(R.id.likesCount);
+        btngivelike=findViewById(R.id.btnGiveLike);
+        tvRatingsCount=findViewById(R.id.tvRatingsCount);
+        tvViewCount=findViewById(R.id.tvViewsCount);
+        tvcommentsCount=findViewById(R.id.commentsCount);
 
+        mDatabaseRefViews=FirebaseDatabase.getInstance().getReference().child("views");
+        mDatabaseRefLikes=FirebaseDatabase.getInstance().getReference().child("likes");
+        mDatabaseRefRatings=FirebaseDatabase.getInstance().getReference().child("Ratings");
+        mDatabaseRefComments=FirebaseDatabase.getInstance().getReference().child("Comments");
 
         ratingBar = findViewById(R.id.DetailsRatingbar);
         ratingBar.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> {
@@ -56,9 +88,8 @@ public class RecipeDetails extends AppCompatActivity {
             ratingBar1.setRating(rating);
             builder.setView(dialogLayout);
             builder.setPositiveButton("Submit", (dialog, which) -> {
-                Toast.makeText(this, "Submited", Toast.LENGTH_SHORT).show();
+                mDatabaseRefRatings.child(key).child(UserId).setValue(rating);
             }).setNegativeButton("Cancel", (dialog, which) -> {
-
                 Toast.makeText(this, "Cancelled", Toast.LENGTH_SHORT).show();
             });
             builder.show();
@@ -66,6 +97,7 @@ public class RecipeDetails extends AppCompatActivity {
         });
 
         if (getIntent()!=null){
+
             name = getIntent().getExtras().get("name").toString();
             ing = getIntent().getExtras().get("ing").toString();
             make = getIntent().getExtras().get("make").toString();
@@ -74,6 +106,7 @@ public class RecipeDetails extends AppCompatActivity {
             ingredents.setText(ing);
             making.setText(make);
             getSupportActionBar().setTitle(name);
+            mDatabaseRefViews.child(key).child(UserId).setValue(true);
 
             Glide.with(this).load(url).listener(new RequestListener<String, GlideDrawable>() {
                 @Override
@@ -88,19 +121,115 @@ public class RecipeDetails extends AppCompatActivity {
                     return false;
                 }
             }).placeholder(R.drawable.bg_food).into(imageView);
+
+
+            // Retrive all likes
+            mDatabaseRefLikes.child(key).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.hasChild(UserId)){
+                        btngivelike.setText("LIKED");
+                        tvlikesCount.setText(""+snapshot.getChildrenCount());
+                    }
+                    else{
+                        btngivelike.setText("LIKE");
+                        tvlikesCount.setText(""+snapshot.getChildrenCount());
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+
+            // Retrive all RAtings
+            mDatabaseRefRatings.child(key).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()){
+                        tvRatingsCount.setText(snapshot.getChildrenCount()+" Ratings");
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+
+            // Retrive all Views
+            mDatabaseRefViews.child(key).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()){
+                        tvViewCount.setText(""+snapshot.getChildrenCount());
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+
+            // Retrive all Comments count
+            mDatabaseRefComments.child(key).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()){
+                        tvcommentsCount.setText(""+snapshot.getChildrenCount());
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+
+
+
         }
 
 
 
+
+
     }
 
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+
+    }
+
     public void givelike(View view) {
-        Toast.makeText(this, "Like Clicked", Toast.LENGTH_SHORT).show();
+        if(showingFirst == true){
+            mDatabaseRefLikes.child(key).child(UserId).setValue(true);
+            showingFirst = false;
+            btngivelike.setText("Liked");
+
+        }else{
+            mDatabaseRefLikes.child(key).child(UserId).removeValue();
+            showingFirst = true;
+            btngivelike.setText("Like");
+
+        }
     }
 
     public void giveComment(View view) {
-        Toast.makeText(this, "Comment Clicked", Toast.LENGTH_SHORT).show();
+        Intent gotoCommentsActivity=new Intent(RecipeDetails.this,CommentsActivity.class);
+        gotoCommentsActivity.putExtra("key",key);
+        gotoCommentsActivity.putExtra("name",name);
+        startActivity(gotoCommentsActivity);
+   //     Toast.makeText(this, "Comment Clicked", Toast.LENGTH_SHORT).show();
     }
 
     @Override
