@@ -2,7 +2,6 @@ package com.mudasir.recipeapp.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.media.Rating;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +9,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -25,13 +23,23 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.mudasir.recipeapp.R;
 import com.mudasir.recipeapp.activities.RecipeDetails;
 import com.mudasir.recipeapp.models.Recipe;
+import com.mudasir.recipeapp.models.RecipeModelForRoom;
 
 import java.util.List;
 
+import static com.mudasir.recipeapp.activities.MainActivity.favoriteDatabase;
+
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImagesViewHolder> {
+
+
+    public interface Callback {
+        void onDeleteClick(RecipeModelForRoom mUser);
+    }
 
     private Context mContext;
     private List<Recipe> mRecipeList;
+  //  Animation rotateClockWise;
+
     private DatabaseReference mDatabaseRefLikes=FirebaseDatabase.getInstance().getReference("Recipes").child("likes");
 
     public ImageAdapter(Context mContext, List<Recipe> mRecipeList) {
@@ -68,8 +76,14 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImagesViewHo
         }).into(holder.imageView);
 
 
-        holder.btnViewRecipe.setOnClickListener(v -> {
 
+        if (favoriteDatabase.favDao().isFavorite(recipe.getKey())==1)
+            holder.btnfav.setImageResource(R.drawable.ic_favorite_filled);
+        else
+            holder.btnfav.setImageResource(R.drawable.ic_favorite);
+
+
+        holder.btnViewRecipe.setOnClickListener(v -> {
 
             Intent intent=new Intent(mContext,RecipeDetails.class);
             intent.putExtra("name",mRecipeList.get(position).getTitle());
@@ -79,6 +93,34 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImagesViewHo
             intent.putExtra("make",mRecipeList.get(position).getMaking());
             mContext.startActivity(intent);
         });
+
+       holder.btnfav.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               RecipeModelForRoom favoriteList = new RecipeModelForRoom();
+               String title= recipe.getTitle();
+               String image= recipe.getImageUrl();
+               String ingre= recipe.getIngredents();
+               String making= recipe.getMaking();
+               String category= recipe.getCategory();
+               String id = recipe.getKey();
+
+               favoriteList.setKey(id);
+               favoriteList.setTitle(title);
+               favoriteList.setImageUrl(image);
+               favoriteList.setIngredents(ingre);
+               favoriteList.setMaking(making);
+               favoriteList.setCategory(category);
+
+               if (favoriteDatabase.favDao().isFavorite(id)!=1){
+                   holder.btnfav.setImageResource(R.drawable.ic_favorite_filled);
+                   favoriteDatabase.favDao().addData(favoriteList);
+               }else {
+                   holder.btnfav.setImageResource(R.drawable.ic_favorite);
+                   favoriteDatabase.favDao().delete(favoriteList);
+               }
+           }
+       });
 
     }
 

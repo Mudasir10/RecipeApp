@@ -1,17 +1,21 @@
 package com.mudasir.recipeapp.activities;
 
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.ImageButton;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageButton;
-import android.widget.Toast;
-
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,9 +27,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.mudasir.recipeapp.R;
 import com.mudasir.recipeapp.adapters.CommentsAdapter;
-import com.mudasir.recipeapp.adapters.ImageAdapter;
 import com.mudasir.recipeapp.models.Comments;
-import com.mudasir.recipeapp.models.Recipe;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,6 +50,8 @@ public class CommentsActivity extends AppCompatActivity {
      FirebaseAuth mAuth;
      FirebaseUser mCurrentuser;
     private String recipe_name;
+
+    private AdView mAdView;
 
 
     @Override
@@ -132,6 +136,18 @@ public class CommentsActivity extends AppCompatActivity {
             }
 
         });
+
+
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
 
     }
 

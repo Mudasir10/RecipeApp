@@ -1,12 +1,7 @@
 package com.mudasir.recipeapp.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,10 +13,25 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.google.android.ads.nativetemplates.NativeTemplateStyle;
+import com.google.android.ads.nativetemplates.TemplateView;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdLoader;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.android.gms.ads.nativead.NativeAd;
+import com.google.android.gms.ads.nativead.NativeAdOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -45,7 +55,7 @@ public class RecipeDetails extends AppCompatActivity {
     String UserId;
     boolean showingFirst = true;
     Button btngivelike;
-    TextView tvlikesCount,tvcommentsCount, tvRatingsCount, tvViewCount;
+    TextView tvlikesCount, tvcommentsCount, tvRatingsCount, tvViewCount;
 
     private DatabaseReference mDatabaseRefLikes;
     private DatabaseReference mDatabaseRefRatings;
@@ -65,18 +75,18 @@ public class RecipeDetails extends AppCompatActivity {
 
         ingredents = findViewById(R.id.ingredents);
         making = findViewById(R.id.howto);
-        imageView=findViewById(R.id.recipe_image);
-        progressBar=findViewById(R.id.progress);
-        tvlikesCount=findViewById(R.id.likesCount);
-        btngivelike=findViewById(R.id.btnGiveLike);
-        tvRatingsCount=findViewById(R.id.tvRatingsCount);
-        tvViewCount=findViewById(R.id.tvViewsCount);
-        tvcommentsCount=findViewById(R.id.commentsCount);
+        imageView = findViewById(R.id.recipe_image);
+        progressBar = findViewById(R.id.progress);
+        tvlikesCount = findViewById(R.id.likesCount);
+        btngivelike = findViewById(R.id.btnGiveLike);
+        tvRatingsCount = findViewById(R.id.tvRatingsCount);
+        tvViewCount = findViewById(R.id.tvViewsCount);
+        tvcommentsCount = findViewById(R.id.commentsCount);
 
-        mDatabaseRefViews=FirebaseDatabase.getInstance().getReference().child("views");
-        mDatabaseRefLikes=FirebaseDatabase.getInstance().getReference().child("likes");
-        mDatabaseRefRatings=FirebaseDatabase.getInstance().getReference().child("Ratings");
-        mDatabaseRefComments=FirebaseDatabase.getInstance().getReference().child("Comments");
+        mDatabaseRefViews = FirebaseDatabase.getInstance().getReference().child("views");
+        mDatabaseRefLikes = FirebaseDatabase.getInstance().getReference().child("likes");
+        mDatabaseRefRatings = FirebaseDatabase.getInstance().getReference().child("Ratings");
+        mDatabaseRefComments = FirebaseDatabase.getInstance().getReference().child("Comments");
 
         ratingBar = findViewById(R.id.DetailsRatingbar);
         ratingBar.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> {
@@ -96,7 +106,7 @@ public class RecipeDetails extends AppCompatActivity {
 
         });
 
-        if (getIntent()!=null){
+        if (getIntent() != null) {
 
             name = getIntent().getExtras().get("name").toString();
             ing = getIntent().getExtras().get("ing").toString();
@@ -127,13 +137,12 @@ public class RecipeDetails extends AppCompatActivity {
             mDatabaseRefLikes.child(key).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot.hasChild(UserId)){
+                    if (snapshot.hasChild(UserId)) {
                         btngivelike.setText("LIKED");
-                        tvlikesCount.setText(""+snapshot.getChildrenCount());
-                    }
-                    else{
+                        tvlikesCount.setText("" + snapshot.getChildrenCount());
+                    } else {
                         btngivelike.setText("LIKE");
-                        tvlikesCount.setText(""+snapshot.getChildrenCount());
+                        tvlikesCount.setText("" + snapshot.getChildrenCount());
                     }
                 }
 
@@ -148,8 +157,8 @@ public class RecipeDetails extends AppCompatActivity {
             mDatabaseRefRatings.child(key).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot.exists()){
-                        tvRatingsCount.setText(snapshot.getChildrenCount()+" Ratings");
+                    if (snapshot.exists()) {
+                        tvRatingsCount.setText(snapshot.getChildrenCount() + " Ratings");
                     }
                 }
 
@@ -164,8 +173,8 @@ public class RecipeDetails extends AppCompatActivity {
             mDatabaseRefViews.child(key).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot.exists()){
-                        tvViewCount.setText(""+snapshot.getChildrenCount());
+                    if (snapshot.exists()) {
+                        tvViewCount.setText("" + snapshot.getChildrenCount());
                     }
                 }
 
@@ -180,8 +189,8 @@ public class RecipeDetails extends AppCompatActivity {
             mDatabaseRefComments.child(key).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot.exists()){
-                        tvcommentsCount.setText(""+snapshot.getChildrenCount());
+                    if (snapshot.exists()) {
+                        tvcommentsCount.setText("" + snapshot.getChildrenCount());
                     }
                 }
 
@@ -194,13 +203,53 @@ public class RecipeDetails extends AppCompatActivity {
 
 
 
+            MobileAds.initialize(this, new OnInitializationCompleteListener() {
+                @Override
+                public void onInitializationComplete(InitializationStatus initializationStatus) {
+
+                    AdLoader adLoader = new AdLoader.Builder(RecipeDetails.this, getString(R.string.detail_page_native_ad))
+                            .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+                                @Override
+                                public void onNativeAdLoaded(NativeAd NativeAd) {
+                                    // Show the ad.
+                                    NativeTemplateStyle styles = new
+                                            NativeTemplateStyle.Builder().build();
+
+                                    TemplateView template = findViewById(R.id.native_ad);
+                                    template.setStyles(styles);
+                                    template.setNativeAd(NativeAd);
+                                }
+                            })
+                            .withAdListener(new AdListener() {
+                                @Override
+                                public void onAdFailedToLoad(LoadAdError adError) {
+                                    // Handle the failure by logging, altering the UI, and so on.
+                                }
+                            })
+                            .withNativeAdOptions(new NativeAdOptions.Builder()
+                                    // Methods in the NativeAdOptions.Builder class can be
+                                    // used here to specify individual options settings.
+                                    .build())
+                            .build();
+                    adLoader.loadAd(new AdRequest.Builder().build());
+
+                }
+            });
+
+
+
+
+        }
+
+
+
         }
 
 
 
 
 
-    }
+
 
 
     @Override
@@ -211,12 +260,12 @@ public class RecipeDetails extends AppCompatActivity {
     }
 
     public void givelike(View view) {
-        if(showingFirst == true){
+        if (showingFirst == true) {
             mDatabaseRefLikes.child(key).child(UserId).setValue(true);
             showingFirst = false;
             btngivelike.setText("Liked");
 
-        }else{
+        } else {
             mDatabaseRefLikes.child(key).child(UserId).removeValue();
             showingFirst = true;
             btngivelike.setText("Like");
@@ -225,11 +274,11 @@ public class RecipeDetails extends AppCompatActivity {
     }
 
     public void giveComment(View view) {
-        Intent gotoCommentsActivity=new Intent(RecipeDetails.this,CommentsActivity.class);
-        gotoCommentsActivity.putExtra("key",key);
-        gotoCommentsActivity.putExtra("name",name);
+        Intent gotoCommentsActivity = new Intent(RecipeDetails.this, CommentsActivity.class);
+        gotoCommentsActivity.putExtra("key", key);
+        gotoCommentsActivity.putExtra("name", name);
         startActivity(gotoCommentsActivity);
-   //     Toast.makeText(this, "Comment Clicked", Toast.LENGTH_SHORT).show();
+        //     Toast.makeText(this, "Comment Clicked", Toast.LENGTH_SHORT).show();
     }
 
     @Override

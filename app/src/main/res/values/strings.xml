@@ -1,7 +1,20 @@
 <resources>
-    <string name="app_name">Recipe App</string>
+    <string name="app_name">RecipesInUrdu</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <string name="welcome_to_recipe_app">Welcome to Recipes In Urdu App</string>
+
+
+    // ad id of admob
+    <string name="admob_appId">ca-app-pub-3549373853828953~8119561119</string>
+
+    <string name="banner_main_page">ca-app-pub-3549373853828953/3810094090</string>
+    <string name="detail_page_native_ad">ca-app-pub-3549373853828953/6614907750</string>
+    <string name="banner_comments_page">ca-app-pub-3549373853828953/2487072433</string>
+    // admob
+
 
 
 </resources>

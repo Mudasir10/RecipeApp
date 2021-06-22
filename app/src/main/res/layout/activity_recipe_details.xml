@@ -109,6 +109,8 @@
             android:layout_height="wrap_content">
 
 
+
+
             <Button
                 android:id="@+id/btnGiveLike"
                 android:layout_margin="5dp"
@@ -175,7 +177,11 @@
 
         </LinearLayout>
 
-
+        <com.google.android.ads.nativetemplates.TemplateView
+            android:id="@+id/native_ad"
+            app:gnt_template_type="@layout/gnt_small_template_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
         <TextView
             android:layout_marginRight="10dp"
