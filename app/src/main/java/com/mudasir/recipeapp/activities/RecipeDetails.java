@@ -191,6 +191,8 @@ public class RecipeDetails extends AppCompatActivity {
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if (snapshot.exists()) {
                         tvcommentsCount.setText("" + snapshot.getChildrenCount());
+                    }else{
+                        tvcommentsCount.setText("0");
                     }
                 }
 
